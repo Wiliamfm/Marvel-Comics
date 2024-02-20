@@ -8,7 +8,7 @@ export class CharactersService {
 
   constructor(private readonly marvelService: MarvelApiService) { }
 
-  public getCharacters() {
-    return this.marvelService.getCharacters();
+  public getCharacters(limit: number, offSet: number) {
+    return this.marvelService.getCharacters(limit, offSet);
   }
 }
