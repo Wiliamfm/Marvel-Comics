@@ -10,7 +10,7 @@ export class MarvelApiService {
 
   constructor(private readonly _httpClient: HttpClient) { }
 
-  private createUrl(url: string): string{
+  private createUrl(url: string): string {
     return `${this.baseUrl}${url}?apikey=${this.apiKey}`;
   }
 
