@@ -1,8 +1,20 @@
-<div class="card" style="width: 18rem;">
-  <img src="..." class="card-img-top" alt="...">
+<!--
+Foto.
+Name,
+Description,
+4 assocciate comics
+-->
+<div class="card" style="width: 18rem;" *ngIf="character">
+  <img src="..." class="card-img-top" alt="character.name">
   <div class="card-body">
-    <h5 class="card-title">Card title</h5>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    <a href="#" class="btn btn-primary">Go somewhere</a>
+    <h5 class="card-title">{{ character.name }}</h5>
+    <p class="card-text">{{ character.description }}</p>
+    <ul>
+      <li *ngFor="let comic of character.comics.items | slice:0:4;">
+        <a [href]="setComicUrl(comic.resourceURI)" class="btn btn-primary" target="_blank">
+          {{ comic.name }}
+        </a>
+      </li>
+    </ul>
   </div>
 </div>

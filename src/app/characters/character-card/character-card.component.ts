@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Character } from 'src/app/models/characters';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-character-card',
@@ -6,5 +8,11 @@ import { Component } from '@angular/core';
   styleUrl: './character-card.component.scss'
 })
 export class CharacterCardComponent {
+  @Input() character: Character | null = null;
+  apiKey = environment.MARVEL_P_KEY;
+
+  setComicUrl(baseUrl: string): string {
+    return `${baseUrl}?apiKey=${this.apiKey}`
+  }
 
 }

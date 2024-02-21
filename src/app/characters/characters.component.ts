@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CharactersService } from './characters.service';
+import { Character, Characters } from '../models/characters';
 
 @Component({
   selector: 'app-characters',
@@ -7,23 +8,47 @@ import { CharactersService } from './characters.service';
   styleUrl: './characters.component.scss'
 })
 export class CharactersComponent implements OnInit {
-  pageLimit = 10;
+  readonly pageLimit = 10;
   pageOffSet = 0;
-  characters = [];
+  totalCharacters = 0;
+  currentPage = 0;
+  characters: Character[] = [];
 
   constructor(private readonly charactersService: CharactersService) {
 
   }
 
   ngOnInit(): void {
-    this.charactersService.getCharacters(this.pageLimit, this.pageOffSet).subscribe({
-      next: response => {
-        //this.characters = response.data.results;
-        console.log(response);
+    this.setCharacters(this.pageLimit, this.pageOffSet)
+  }
+
+  private setCharacters(pageLimit: number, pageOffSet: number): void {
+    this.charactersService.getCharacters(pageLimit, pageOffSet).subscribe({
+      next: (response: Characters) => {
+        this.characters = response.characters;
+        this.totalCharacters = response.total;
       },
       error: error => {
         console.error("Unable to get characters:\n", error);
       }
     });
+  }
+
+  goToPage(goToNext = true) {
+    console.log(this.pageOffSet, this.totalCharacters)
+    if (goToNext) {
+      if (this.pageOffSet + this.pageLimit < this.totalCharacters) {
+        this.pageOffSet += this.pageLimit;
+        this.currentPage++;
+      }
+    } else {
+      this.currentPage--;
+      this.pageOffSet -= this.pageLimit;
+      if (this.pageOffSet <= 1) {
+        this.pageOffSet = 0;
+        this.currentPage = 0;
+      }
+    }
+    this.setCharacters(this.pageLimit, this.pageOffSet);
   }
 }
