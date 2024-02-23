@@ -87,3 +87,4 @@ export interface CharactersRequest {
   limit?: number,
   offset?: number
 }
+

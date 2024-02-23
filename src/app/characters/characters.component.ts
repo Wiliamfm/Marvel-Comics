@@ -3,6 +3,11 @@ import { CharactersService } from './characters.service';
 import { Character, Characters, CharactersRequest } from '../models/characters';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
+const orderByNameAsc = "name-asc";
+const orderByNameDesc = "name-desc";
+const orderByCreationDateAsc = "creationDate-asc";
+const orderByCreationDateDesc = "creationDate-desc";
+
 @Component({
   selector: 'app-characters',
   templateUrl: './characters.component.html',
@@ -17,20 +22,49 @@ export class CharactersComponent implements OnInit {
     limit: 10,
     offset: 0,
   };
+  orderOptions = [
+    [orderByNameAsc, "Name ascendent"],
+    [orderByNameDesc, "Name descendent"],
+    [orderByCreationDateAsc, "Creation date ascendent"],
+    [orderByCreationDateDesc, "Creation date descendent"],
+  ]
 
   constructor(private readonly charactersService: CharactersService, private readonly _fb: FormBuilder) {
     this.filterForm = this._fb.group({
       name: [],
+      orderBy: [],
     })
   }
 
   ngOnInit(): void {
     this.setCharacters(this.filterParams)
-    this.filterForm.controls['name'].valueChanges.subscribe(value => {
+    this.filterForm.controls['name'].valueChanges.subscribe((value: string) => {
       this.filterParams.nameStartsWith = value;
+      if (value.length <= 0) {
+        this.filterParams.nameStartsWith = undefined;
+      }
       this.setCharacters(this.filterParams);
-      this.filterParams.nameStartsWith = undefined;
     });
+    this.filterForm.controls['orderBy'].valueChanges.subscribe(value => {
+      switch (value) {
+        case orderByNameAsc:
+          this.filterParams.orderBy = "name";
+          break;
+        case orderByNameDesc:
+          this.filterParams.orderBy = "-name";
+          break;
+        case orderByCreationDateAsc:
+          this.filterParams.orderBy = "modified";
+          break;
+        case orderByCreationDateDesc:
+          this.filterParams.orderBy = "-modified";
+          break;
+        default:
+          this.filterParams.orderBy = undefined;
+          break;
+      }
+      this.setCharacters(this.filterParams);
+    })
   }
 
   private setCharacters(params: CharactersRequest): void {
