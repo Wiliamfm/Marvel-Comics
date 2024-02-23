@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { GetCharacters } from '../models/characters';
+import { CharactersRequest, GetCharacters } from '../models/characters';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -17,12 +17,14 @@ export class MarvelApiService {
     return `${this.baseUrl}${url}?apikey=${this.apiKey}`;
   }
 
-  public getCharacters(limit: number, offSet: number): Observable<GetCharacters> {
+  private filterObject(obj: {}): {} {
+    return Object.fromEntries(Object.entries(obj).
+      filter(([key, val]) => val != null));
+  }
+
+  public getCharacters(input: CharactersRequest): Observable<GetCharacters> {
     return this._httpClient.get<GetCharacters>(this.createUrl('/characters'), {
-      params: {
-        limit,
-        offset: offSet
-      }
+      params: this.filterObject(input)
     });
   }
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CharactersService } from './characters.service';
-import { Character, Characters } from '../models/characters';
+import { Character, Characters, CharactersRequest } from '../models/characters';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-characters',
@@ -8,22 +9,32 @@ import { Character, Characters } from '../models/characters';
   styleUrl: './characters.component.scss'
 })
 export class CharactersComponent implements OnInit {
-  readonly pageLimit = 10;
-  pageOffSet = 0;
   totalCharacters = 0;
   currentPage = 0;
   characters: Character[] = [];
+  filterForm: FormGroup;
+  filterParams: CharactersRequest = {
+    limit: 10,
+    offset: 0,
+  };
 
-  constructor(private readonly charactersService: CharactersService) {
-
+  constructor(private readonly charactersService: CharactersService, private readonly _fb: FormBuilder) {
+    this.filterForm = this._fb.group({
+      name: [],
+    })
   }
 
   ngOnInit(): void {
-    this.setCharacters(this.pageLimit, this.pageOffSet)
+    this.setCharacters(this.filterParams)
+    this.filterForm.controls['name'].valueChanges.subscribe(value => {
+      this.filterParams.nameStartsWith = value;
+      this.setCharacters(this.filterParams);
+      this.filterParams.nameStartsWith = undefined;
+    });
   }
 
-  private setCharacters(pageLimit: number, pageOffSet: number): void {
-    this.charactersService.getCharacters(pageLimit, pageOffSet).subscribe({
+  private setCharacters(params: CharactersRequest): void {
+    this.charactersService.getCharacters(params).subscribe({
       next: (response: Characters) => {
         this.characters = response.characters;
         this.totalCharacters = response.total;
@@ -35,20 +46,24 @@ export class CharactersComponent implements OnInit {
   }
 
   goToPage(goToNext = true) {
-    console.log(this.pageOffSet, this.totalCharacters)
+    console.log(this.filterParams, this.totalCharacters);
+    if (this.filterParams.offset == null || this.filterParams.limit == null) {
+      console.error("limit or offset not defined");
+      return;
+    }
     if (goToNext) {
-      if (this.pageOffSet + this.pageLimit < this.totalCharacters) {
-        this.pageOffSet += this.pageLimit;
+      if (this.filterParams.offset + this.filterParams.limit < this.totalCharacters) {
+        this.filterParams.offset += this.filterParams.limit;
         this.currentPage++;
       }
     } else {
       this.currentPage--;
-      this.pageOffSet -= this.pageLimit;
-      if (this.pageOffSet <= 1) {
-        this.pageOffSet = 0;
+      this.filterParams.offset -= this.filterParams.limit;
+      if (this.filterParams.offset <= 1) {
+        this.filterParams.offset = 0;
         this.currentPage = 0;
       }
     }
-    this.setCharacters(this.pageLimit, this.pageOffSet);
+    this.setCharacters(this.filterParams);
   }
 }

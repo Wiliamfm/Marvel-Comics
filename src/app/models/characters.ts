@@ -79,3 +79,11 @@ export interface GetCharacters {
   },
   etag: string
 }
+
+export interface CharactersRequest {
+  name?: string,
+  nameStartsWith?: string,
+  orderBy?: "name" | "modified" | "-name" | "-modified",
+  limit?: number,
+  offset?: number
+}
