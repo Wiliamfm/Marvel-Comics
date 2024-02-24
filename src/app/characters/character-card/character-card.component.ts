@@ -3,6 +3,7 @@ import { Character } from 'src/app/models/characters';
 import { environment } from 'src/environments/environment';
 import { PORTRAIT_FANTASTIC_168X252PX } from '../const/character';
 import { Comic } from 'src/app/models/comics';
+import { ComicService } from 'src/app/comics/comic.service';
 
 @Component({
   selector: 'app-character-card',
@@ -12,6 +13,11 @@ import { Comic } from 'src/app/models/comics';
 export class CharacterCardComponent {
   @Input() character: Character | null = null;
   apiKey = environment.MARVEL_P_KEY;
+  currentComic: Comic | null = null;
+
+  constructor(private readonly _comicService: ComicService) {
+
+  }
 
   setComicUrl(baseUrl: string): string {
     return `${baseUrl}?apiKey=${this.apiKey}`
@@ -21,8 +27,20 @@ export class CharacterCardComponent {
     return `${character.thumbnail.path}/${imgSize}.${character.thumbnail.extension}`
   }
 
-  openComicModal() {
-    console.log("open comic");
+  setCurrentComic(comicUrl: string) {
+    const comicId = Number(comicUrl.split("/").pop());
+    if (typeof comicId !== "number") {
+      //TODO Display some warning?
+      this.currentComic = null;
+      return;
+    }
+    this._comicService.getComic(comicId).subscribe({
+      next: comic => {
+        this.currentComic = comic;
+        console.log("Comic:\n", this.currentComic);
+      },
+      error: error => console.error("unable to get comic:\n", error)
+    })
   }
 
 }

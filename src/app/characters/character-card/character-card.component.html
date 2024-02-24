@@ -1,9 +1,3 @@
-<!--
-Foto.
-Name,
-Description,
-4 assocciate comics
--->
 <div class="card" style="width: 20rem;" *ngIf="character">
   <img [src]="createImgUrl(character)" class="card-img-top" alt="character.name">
   <div class="card-body">
@@ -12,10 +6,26 @@ Description,
     <p class="card-title"><b>Comics:</b></p>
     <ul>
       <li *ngFor="let comic of character.comics.items | slice:0:4;">
-        <span class="clickable" (click)="openComicModal(comic.resourceURI)">
+        <span data-bs-toggle="modal" data-bs-target="#comicModal" class="clickable" (click)="setCurrentComic(comic.resourceURI)" [data-bs-comic]="comic">
           {{ comic.name }}
         </span>
       </li>
     </ul>
+  </div>
+</div>
+
+<div *ngIf="currentComic" class="modal fade" id="comicModal" aria-hidden="true" aria-labelledby="comicModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">{{ currentComic.title }}</h1>
+      </div>
+      <div class="modal-body">
+        Show a second modal and hide this one with the button below.
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+      </div>
+    </div>
   </div>
 </div>

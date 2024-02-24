@@ -9,9 +9,7 @@ export interface GetComic {
     limit: number,
     total: number,
     count: number,
-    results: [
-
-    ]
+    results: Comic[]
   },
   etag: string
 }

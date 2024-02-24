@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { CharactersRequest, GetCharacters } from '../models/characters';
 import { Observable } from 'rxjs';
+import { GetComic } from '../models/comics';
 
 @Injectable({
   providedIn: 'root'
@@ -26,5 +27,9 @@ export class MarvelApiService {
     return this._httpClient.get<GetCharacters>(this.createUrl('/characters'), {
       params: this.filterObject(input)
     });
+  }
+
+  public getComic(id: number): Observable<GetComic> {
+    return this._httpClient.get<GetComic>(this.createUrl(`/comics/${id}`))
   }
 }
