@@ -1,8 +1,21 @@
-<div class="card" style="width: 20rem;" *ngIf="">
-  <img [src]="" class="card-img-top" alt="character.name">
+<div id="modal" class="card" style="width: 20rem;" *ngIf="comic && isOpen">
+  <img style="width: 200px; margin-left: 18%" [src]="createImgUrl(comic)" class="card-img-top" alt="comic.title">
   <div class="card-body">
-    <h5 class="card-title"></h5>
-    <p class="card-text"></p>
-    <p class="card-title"><b>Comics:</b></p>
+    <h5 class="card-title">
+      {{ comic.title }}
+      <span *ngIf="isFavorite(comic); else elseFavorite" (click)="addToFavorites(comic)" class="material-symbols-outlined clickable" style="font-variation-settings: 'FILL' 1, 'wght' 100, 'GRAD' 0, 'opsz' 48;">
+        star
+      </span>
+      <ng-template #elseFavorite>
+        <span (click)="addToFavorites(comic)" class="material-symbols-outlined clickable">
+          star
+        </span>
+      </ng-template>
+    </h5>
+    <p class="card-text">{{ comic.description }}</p>
+    <p *ngIf="comic.description.length <= 0" class="card-text">No description available.</p>
   </div>
+</div>
+
+<div *ngIf="isOpen" class="overlay" (click)="closeModal()">
 </div>

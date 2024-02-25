@@ -1,33 +1,42 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Character } from 'src/app/models/characters';
-import { environment } from 'src/environments/environment';
 import { PORTRAIT_FANTASTIC_168X252PX } from '../const/character';
 import { Comic } from 'src/app/models/comics';
 import { ComicService } from 'src/app/comics/comic.service';
+import { environment } from 'src/environments/environment';
+import { SpinnerService } from 'src/app/shared/loader/spinner.service';
 
 @Component({
   selector: 'app-character-card',
   templateUrl: './character-card.component.html',
   styleUrl: './character-card.component.scss'
 })
-export class CharacterCardComponent {
+export class CharacterCardComponent implements OnInit {
   @Input() character: Character | null = null;
   apiKey = environment.MARVEL_P_KEY;
   currentComic: Comic | null = null;
+  isComicModalOpen = false;
 
-  constructor(private readonly _comicService: ComicService) {
+  constructor(private readonly _comicService: ComicService, private readonly _spinnerService: SpinnerService) {
 
   }
 
-  setComicUrl(baseUrl: string): string {
-    return `${baseUrl}?apiKey=${this.apiKey}`
+  ngOnInit(): void {
+    const [comicModal]= this.getElementsByIds(["comicModal"]);
+    if(comicModal){
+      comicModal.addEventListener("shown.bs.modal", () => {
+        this.currentComic = null;
+      })
+    }
+
   }
 
-  createImgUrl(character: Character, imgSize = PORTRAIT_FANTASTIC_168X252PX) {
-    return `${character.thumbnail.path}/${imgSize}.${character.thumbnail.extension}`
+  createImgUrl(item: Character | Comic, imgSize = PORTRAIT_FANTASTIC_168X252PX) {
+    return `${item.thumbnail.path}/${imgSize}.${item.thumbnail.extension}`
   }
 
   setCurrentComic(comicUrl: string) {
+    this._spinnerService.open();
     const comicId = Number(comicUrl.split("/").pop());
     if (typeof comicId !== "number") {
       //TODO Display some warning?
@@ -36,11 +45,23 @@ export class CharacterCardComponent {
     }
     this._comicService.getComic(comicId).subscribe({
       next: comic => {
-        this.currentComic = comic;
-        console.log("Comic:\n", this.currentComic);
+        this.currentComic = JSON.parse(JSON.stringify(comic)) as Comic;
+        this._spinnerService.close();
+        this.openComicModal();
       },
       error: error => console.error("unable to get comic:\n", error)
     })
   }
 
+  private openComicModal(){
+    this.isComicModalOpen = true;
+  }
+
+  closeComicModal(){
+    this.isComicModalOpen = false;
+  }
+
+  private getElementsByIds(ids: string[]){
+    return ids.map(id => document.getElementById(id));
+  }
 }

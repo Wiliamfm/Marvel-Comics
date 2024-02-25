@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ComicService {
+  readonly favoriteComics: Comic[]= [];
 
   constructor(private readonly marvelService: MarvelApiService) { }
 
@@ -22,5 +23,33 @@ export class ComicService {
         error: error => console.error("Unable to get characters:\n", error)
       })
     });
+  }
+
+  checkComicInFavorites(comic: Comic): boolean {
+    for(const favoriteComic of this.favoriteComics) {
+      if(favoriteComic.id === comic.id) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  addFavorite(comic: Comic): boolean {
+    if(this.checkComicInFavorites(comic)) {
+      return false;
+    }
+    this.favoriteComics.push(comic);
+    console.log(this.favoriteComics);
+    return true;
+  }
+
+  removeFavorite(comic: Comic): boolean {
+    const comicIndex = this.favoriteComics.indexOf(comic);
+    if(comicIndex < 0) {
+      return false;
+    }
+    this.favoriteComics.splice(comicIndex, 1);
+    console.log(this.favoriteComics);
+    return true;
   }
 }

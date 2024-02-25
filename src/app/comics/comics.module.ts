@@ -7,6 +7,9 @@ import { ComicCardComponent } from './comic-card/comic-card.component';
   ],
   imports: [
     CommonModule,
+  ],
+  exports: [
+    ComicCardComponent
   ]
 })
 export class ComicsModule { }

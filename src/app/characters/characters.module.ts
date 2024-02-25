@@ -7,6 +7,7 @@ import { CharacterCardComponent } from './character-card/character-card.componen
 import { FavoritesComponent } from './favorites/favorites.component';
 import { CharactersComponent } from './characters.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ComicsModule } from '../comics/comics.module';
 
 
 @NgModule({
@@ -20,6 +21,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     CharactersRoutingModule,
     ReactiveFormsModule,
+    ComicsModule,
   ],
   exports: [
     CharactersComponent
