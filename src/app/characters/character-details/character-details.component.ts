@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, numberAttribute } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef, inject, numberAttribute } from '@angular/core';
 import { CharactersService } from '../characters.service';
 import { Character } from 'src/app/models/characters';
 import { LANDSCAPE_INCREDIBLE_464X261PX, PORTRAIT_FANTASTIC_168X252PX } from '../const/character';
@@ -9,6 +9,7 @@ import { MarvelApiService } from 'src/app/apis/marvel-api.service';
 import { GetSerie, Serie, Story } from 'src/app/models/marvel';
 import { Observable, concat, filter, finalize } from 'rxjs';
 import { Title, TitleResponse, TitleSource } from 'src/app/models/watchMovie';
+import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-character-details',
@@ -17,6 +18,9 @@ import { Title, TitleResponse, TitleSource } from 'src/app/models/watchMovie';
 })
 export class CharacterDetailsComponent implements OnInit{
   @Input({transform: numberAttribute}) id: number | null = null;
+
+  private modalService = inject(NgbModal);
+
   character: Character | null = null;
   comics: Comic[] = [];
   isComicModalOpen= false;
@@ -26,6 +30,8 @@ export class CharacterDetailsComponent implements OnInit{
   stories: Story[] = [];
   stories$: Observable<Story>[] = [];
   titles: Title[] = [];
+  currentTitle: Title | null = null;
+
 
   constructor(private readonly _charactersService: CharactersService, private readonly _comicService: ComicService, private readonly _streamingPlatformsService: PlatformsStreamingService, private readonly _marvelService: MarvelApiService) { }
 
@@ -71,9 +77,35 @@ export class CharacterDetailsComponent implements OnInit{
 
   setTitleSources(title: Title) {
     this._streamingPlatformsService.getTitleSources(title.id).subscribe({
-      next: sources => title.sources = sources,
+      next: sources => {
+        this.addSourcesToTitle(title, sources);
+      },
       error: error => console.error("Unable to get title sources:\n", error)
     })
+  }
+
+  addSourcesToTitle(title: Title, sources: TitleSource[]) {
+    if(!title.sources) {
+      title.sources = [];
+    }
+    for(const source of sources) {
+      if(this.getTitleSource(title, source.source_id)) {
+        continue;
+      }
+      title.sources.push(source);
+    }
+  }
+
+  getTitleSource(title: Title, sourceId: number) {
+    if(!title.sources){
+      return null;
+    }
+    for(const source of title.sources){
+      if(source.source_id === sourceId) {
+        return source;
+      }
+    }
+    return null;
   }
 
   createImgUrl(item: Character, imgSize= LANDSCAPE_INCREDIBLE_464X261PX ) {
@@ -97,16 +129,27 @@ export class CharacterDetailsComponent implements OnInit{
     this.isComicModalOpen = false
   }
 
-  createPopOverElement(){
-
+  openTitleModal(content: TemplateRef<any>, title: Title) {
+    this.currentTitle = title;
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then(
+			(result) => {
+				console.log(`Closed with: ${result}`);
+			},
+			(reason) => {
+				console.log(`Dismissed ${this.getDismissReason(reason)}`);
+			},
+		);
   }
 
-  getSourceContent(title: Title) {
-    return "asdgf";
-  }
-
-  togglePopOver(title: Title) {
-    title.isOpen = !title.isOpen;
-  }
+	private getDismissReason(reason: any): string {
+		switch (reason) {
+			case ModalDismissReasons.ESC:
+				return 'by pressing ESC';
+			case ModalDismissReasons.BACKDROP_CLICK:
+				return 'by clicking on a backdrop';
+			default:
+				return `with: ${reason}`;
+		}
+	}
 
 }

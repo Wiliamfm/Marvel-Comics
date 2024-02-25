@@ -13,8 +13,7 @@
         <div class="carousel-item active">
           <div class="d-flex justify-content-center">
             <div *ngFor="let title of titles">
-              <app-pop-over *ngIf="title.isOpen" [title]="title.name" [content]="getSourceContent(title)" [isOpen]="title.isOpen"></app-pop-over>
-              <img (click)="togglePopOver(title)" class="d-block img-fluid clickable" [src]="title.image_url" [alt]="title.name"/>
+              <img (click)="openTitleModal(streamingPlatformsModal, title)" class="d-block img-fluid clickable" [src]="title.image_url" [alt]="title.name"/>
             </div>
           </div>
         </div>
@@ -72,3 +71,20 @@
 </div>
 
 <app-comic-card [comic]="currentComic" [isOpen]="isComicModalOpen" (close)="closeComicModal()"></app-comic-card>
+
+<ng-template #streamingPlatformsModal let-modal>
+	<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Watch {{ currentTitle?.name }} on:</h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+	</div>
+	<div class="modal-body">
+    <ul>
+      <li *ngFor="let source of currentTitle?.sources">
+        <a href="{{ source?.web_url }}" target="_blank">{{ source?.name }}</a>
+      </li>
+    </ul>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
+	</div>
+</ng-template>
