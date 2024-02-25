@@ -1,1 +1,37 @@
-<p>character-details works!</p>
+<div *ngIf="character" class="container my-3">
+  <div class="row d-flex">
+    <h2>{{ character.name }}</h2>
+    <div class="row">
+      <img class="col-6 img-fluid" [src]="createImgUrl(character)" [alt]="character.name"/>
+      <p class="col-4">{{ character.description }}</p>
+    </div>
+  </div>
+  <div class="row">
+    <h2>Comics</h2>
+    <div id="carouselExample" class="carousel slide">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <div class="d-flex justify-content-center">
+            <img (click)="openComicModal(comic)" *ngFor="let comic of comics" class="d-block img-fluid clickable" [src]="createComicImgUrl(comic)" [alt]="comic.title"/>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <img class="d-block w-100" [src]="createImgUrl(character)" [alt]="character.name"/>
+        </div>
+        <div class="carousel-item">
+          <img class="d-block w-100" [src]="createImgUrl(character)" [alt]="character.name"/>
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<app-comic-card [comic]="currentComic" [isOpen]="isComicModalOpen" (close)="closeComicModal()"></app-comic-card>

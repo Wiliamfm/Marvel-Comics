@@ -5,6 +5,7 @@ import { Comic } from 'src/app/models/comics';
 import { ComicService } from 'src/app/comics/comic.service';
 import { environment } from 'src/environments/environment';
 import { SpinnerService } from 'src/app/shared/loader/spinner.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-character-card',
@@ -17,7 +18,7 @@ export class CharacterCardComponent implements OnInit {
   currentComic: Comic | null = null;
   isComicModalOpen = false;
 
-  constructor(private readonly _comicService: ComicService, private readonly _spinnerService: SpinnerService) {
+  constructor(private readonly _comicService: ComicService, private readonly _spinnerService: SpinnerService, private readonly _router: Router) {
 
   }
 
@@ -63,5 +64,9 @@ export class CharacterCardComponent implements OnInit {
 
   private getElementsByIds(ids: string[]){
     return ids.map(id => document.getElementById(id));
+  }
+
+  goToDetails(character: Character){
+    this._router.navigate(['characters', character.id]);
   }
 }

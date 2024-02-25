@@ -1,5 +1,5 @@
 <div class="card" style="width: 20rem;" *ngIf="character">
-  <img [src]="createImgUrl(character)" class="card-img-top" alt="character.name">
+  <img (click)="goToDetails(character)" [src]="createImgUrl(character)" class="clickable card-img-top" alt="character.name">
   <div class="card-body">
     <h5 class="card-title">{{ character.name }}</h5>
     <p class="card-text">{{ character.description }}</p>

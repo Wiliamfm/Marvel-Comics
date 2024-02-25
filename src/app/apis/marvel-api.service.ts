@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { CharactersRequest, GetCharacters } from '../models/characters';
+import { CharactersRequest, GetCharacter, GetCharacters } from '../models/characters';
 import { Observable } from 'rxjs';
 import { GetComic } from '../models/comics';
 
@@ -20,13 +20,17 @@ export class MarvelApiService {
 
   private filterObject(obj: {}): {} {
     return Object.fromEntries(Object.entries(obj).
-      filter(([key, val]) => val != null));
+      filter(([, val]) => val != null));
   }
 
   public getCharacters(input: CharactersRequest): Observable<GetCharacters> {
     return this._httpClient.get<GetCharacters>(this.createUrl('/characters'), {
       params: this.filterObject(input)
     });
+  }
+
+  public getCharacter(id: number): Observable<GetCharacter> {
+    return this._httpClient.get<GetCharacter>(this.createUrl(`/characters/${id}`));
   }
 
   public getComic(id: number): Observable<GetComic> {
