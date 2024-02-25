@@ -8,6 +8,7 @@ import { FavoritesComponent } from './favorites/favorites.component';
 import { CharactersComponent } from './characters.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ComicsModule } from '../comics/comics.module';
+import { PopOverComponent } from '../shared/pop-over/pop-over.component';
 
 
 @NgModule({
@@ -22,6 +23,7 @@ import { ComicsModule } from '../comics/comics.module';
     CharactersRoutingModule,
     ReactiveFormsModule,
     ComicsModule,
+    PopOverComponent,
   ],
   exports: [
     CharactersComponent

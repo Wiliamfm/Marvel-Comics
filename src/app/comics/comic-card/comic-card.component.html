@@ -13,7 +13,7 @@
       </ng-template>
     </h5>
     <p class="card-text">{{ comic.description }}</p>
-    <p *ngIf="comic.description.length <= 0" class="card-text">No description available.</p>
+    <p *ngIf="!comic.description || comic.description.length <= 0" class="card-text">No description available.</p>
   </div>
 </div>
 
