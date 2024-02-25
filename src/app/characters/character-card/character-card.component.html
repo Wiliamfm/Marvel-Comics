@@ -3,7 +3,7 @@
   <div class="card-body">
     <h5 class="card-title">{{ character.name }}</h5>
     <p class="card-text">{{ character.description }}</p>
-    <p class="card-title"><b>Comics:</b></p>
+    <p *ngIf="character.comics.items && character.comics.items.length > 0; else elseComicItems" class="card-title"><b>Comics:</b></p>
     <ul>
       <li *ngFor="let comic of character.comics.items | slice:0:4;">
         <span class="clickable" (click)="setCurrentComic(comic.resourceURI)">
@@ -11,6 +11,9 @@
         </span>
       </li>
     </ul>
+    <ng-template #elseComicItems>
+      <p class="card-title"><b>This character has not appeared in any comic yet.</b></p>
+    </ng-template>
   </div>
 </div>
 
