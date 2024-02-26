@@ -7,9 +7,10 @@ import { ComicService } from 'src/app/comics/comic.service';
 import { PlatformsStreamingService } from 'src/app/apis/platforms-streaming.service';
 import { MarvelApiService } from 'src/app/apis/marvel-api.service';
 import { GetSerie, Serie, Story } from 'src/app/models/marvel';
-import { Observable, concat, filter, finalize } from 'rxjs';
-import { Title, TitleResponse, TitleSource } from 'src/app/models/watchMovie';
+import { Observable, concat, filter } from 'rxjs';
+import { Title, TitleSource } from 'src/app/models/watchMovie';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { SpinnerService } from 'src/app/shared/loader/spinner.service';
 
 @Component({
   selector: 'app-character-details',
@@ -33,16 +34,18 @@ export class CharacterDetailsComponent implements OnInit{
   currentTitle: Title | null = null;
 
 
-  constructor(private readonly _charactersService: CharactersService, private readonly _comicService: ComicService, private readonly _streamingPlatformsService: PlatformsStreamingService, private readonly _marvelService: MarvelApiService) { }
+  constructor(private readonly _charactersService: CharactersService, private readonly _comicService: ComicService, private readonly _streamingPlatformsService: PlatformsStreamingService, private readonly _marvelService: MarvelApiService, private readonly _spinnerService: SpinnerService) { }
 
   ngOnInit(): void {
     if(this.id === null || Number.isNaN(this.id)) {
       return;
     }
+    this._spinnerService.open();
     this._charactersService.getCharacter(this.id).subscribe({
       next: (character) => {
         console.log(character);
         this.character= character;
+        this._spinnerService.close();
         if(this.character === null) {
           return;
         }

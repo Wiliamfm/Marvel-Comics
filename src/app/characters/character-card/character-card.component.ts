@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Character } from 'src/app/models/characters';
-import { PORTRAIT_FANTASTIC_168X252PX } from '../const/character';
+import { LANDSCAPE_INCREDIBLE_464X261PX, LANDSCAPE_SMALL_120X90PX } from '../const/character';
 import { Comic } from 'src/app/models/comics';
 import { ComicService } from 'src/app/comics/comic.service';
 import { environment } from 'src/environments/environment';
@@ -32,7 +32,7 @@ export class CharacterCardComponent implements OnInit {
 
   }
 
-  createImgUrl(item: Character | Comic, imgSize = PORTRAIT_FANTASTIC_168X252PX) {
+  createImgUrl(item: Character | Comic, imgSize = LANDSCAPE_INCREDIBLE_464X261PX) {
     return `${item.thumbnail.path}/${imgSize}.${item.thumbnail.extension}`
   }
 

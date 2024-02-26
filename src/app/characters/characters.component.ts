@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CharactersService } from './characters.service';
 import { Character, Characters, CharactersRequest } from '../models/characters';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { SpinnerService } from '../shared/loader/spinner.service';
 
 const orderByNameAsc = "name-asc";
 const orderByNameDesc = "name-desc";
@@ -29,7 +30,7 @@ export class CharactersComponent implements OnInit {
     [orderByCreationDateDesc, "Creation date descendent"],
   ]
 
-  constructor(private readonly charactersService: CharactersService, private readonly _fb: FormBuilder) {
+  constructor(private readonly charactersService: CharactersService, private readonly _fb: FormBuilder, private readonly _spinnerService: SpinnerService) {
     this.filterForm = this._fb.group({
       name: [],
       orderBy: [],
@@ -68,10 +69,12 @@ export class CharactersComponent implements OnInit {
   }
 
   private setCharacters(params: CharactersRequest): void {
+    this._spinnerService.open();
     this.charactersService.getCharacters(params).subscribe({
       next: (response: Characters) => {
         this.characters = response.characters;
         this.totalCharacters = response.total;
+        this._spinnerService.close();
       },
       error: error => {
         console.error("Unable to get characters:\n", error);
