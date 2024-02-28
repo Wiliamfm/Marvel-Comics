@@ -1,13 +1,13 @@
 <div *ngIf="character" class="container my-3">
   <div class="row d-flex">
-    <h2>{{ character.name }}</h2>
-    <div class="row">
+    <h2 class="col-auto">{{ character.name }}</h2>
+    <div class="d-flex">
       <img class="col-6 img-fluid" [src]="createImgUrl(character)" [alt]="character.name"/>
-      <p class="col-5">{{ character.description }}</p>
+      <p *ngIf="character.description" class="col-5 stroke-text description-text align-self-center ms-2 p-2">{{ character.description }}</p>
     </div>
   </div>
   <div *ngIf="titles.length > 0" class="row">
-    <h2>Movies & Series</h2>
+    <h2 class="mt-3 text-center">Movies & Series</h2>
     <div id="carouselExample" class="carousel slide">
       <div class="carousel-inner">
         <div class="carousel-item active">
@@ -19,7 +19,7 @@
     </div>
   </div>
   <div *ngIf="comics.length > 0" class="row">
-    <h2>Comics</h2>
+    <h2 class="mt-3 text-center">Comics</h2>
     <div id="carouselExample" class="carousel slide">
       <div class="carousel-inner">
         <div class="carousel-item active">

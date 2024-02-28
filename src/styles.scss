@@ -2,3 +2,22 @@
 .clickable {
   cursor: pointer;
 }
+
+body {
+  background-image: url("/assets/54687.jpg");
+}
+
+h2 {
+  -webkit-text-fill-color: white;
+  font-size: 50px;
+  // -webkit-text-stroke-width: 1px;
+  // -webkit-text-stroke-color: red;
+  background-color: rgba(100%, 0, 0, 0.5);
+  display: inline-block;
+  border-radius: 2em;
+}
+
+.stroke-text {
+  color: white;
+  background-color: black;
+}
